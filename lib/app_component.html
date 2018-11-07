@@ -1,0 +1,48 @@
+<h1>Decoding Tools</h1>
+
+<material-tab-panel class="tab-panel" [activeTabIndex]="1">
+    <material-tab label="URL Encoding">
+        <table>
+            <tr><td>
+        <material-radio-group>
+            <material-radio [(checked)]="encodeUrl">Encode</material-radio>
+            <material-radio [checked]="!encodeUrl">Decode</material-radio>
+        </material-radio-group>
+            </td></tr>
+            <tr><td>
+        <material-input class="block-width"
+                        multiline
+                        rows="10"
+                        type="text"
+                        label="Input" [(ngModel)]="urlInput">
+        </material-input>
+            </td><td>
+        <material-input class="block-width"
+                        multiline
+                        disable
+                        rows="10"
+                        type="text"
+                        label="Output" [ngModel]="urlOutput">
+        </material-input></td></tr>
+        </table>
+    </material-tab>
+    <material-tab label="HTML Encoding">
+        <material-radio-group>
+            <material-radio [(checked)]="encodeHtml">Encode</material-radio>
+            <material-radio [checked]="!encodeHtml">Decode</material-radio>
+        </material-radio-group>
+        <material-input class="block-width"
+                        multiline
+                        rows="10"
+                        type="text"
+                        label="Input" [(ngModel)]="htmlInput">
+        </material-input>
+        <material-input class="block-width"
+                        multiline
+                        disable
+                        rows="10"
+                        type="text"
+                        label="Output" [ngModel]="htmlOutput">
+        </material-input>
+    </material-tab>
+</material-tab-panel>
