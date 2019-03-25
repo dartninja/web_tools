@@ -23,27 +23,58 @@ import 'package:html_unescape/html_unescape.dart';
 class AppComponent {
   Logger _log = new Logger("AppComponent");
 
-  String _urlInput = "", _htmlInput = "", _urlOutput = "", _htmlOutput = "";
+  String _input = "", _urlOutput = "", _htmlOutput = "", _b64Output = "";
+  String urlError = "", htmlError = "", b64Error = "";
 
+  void set input(String value) {
+    _log.fine("input");
+    _input = value;
 
-  void set urlInput(String value) {
-    try {
-        _urlInput = value;
-        _urlOutput = Uri.encodeQueryComponent(value);
-    } catch(e,st) {
-      _log.warning("urlInput",e,st);
-      _urlOutput = "";
-    }
+    updateOutputs();
   }
-  String get urlInput => _urlInput;
+  String get input => _input;
+
+
+  void updateOutputs({String skip = ""}) {
+    if(skip!="url") {
+      try {
+        _urlOutput = Uri.encodeQueryComponent(_input);
+      } catch (e, st) {
+        _log.warning("updateOutputs url", e, st);
+        _urlOutput = "";
+      }
+    }
+
+    if(skip!="html") {
+      try {
+        _htmlOutput = _htmlEscape.convert(_input);
+      } catch (e, st) {
+        _log.warning("updateOutputs html", e, st);
+        _htmlOutput = "";
+      }
+    }
+
+    if(skip!="b64") {
+      try {
+        _b64Output = base64.encode(utf8.encode(_input));
+      } catch (e, st) {
+        _log.warning("updateOutputs b64", e, st);
+        _htmlOutput = "";
+      }
+    }
+
+  }
 
   void set urlOutput(String value) {
+    _log.fine("urlOutput");
     try {
-      _urlOutput = value;
-      _urlInput = Uri.decodeQueryComponent(value);
+      _urlOutput  = value;
+      urlError = "";
+      _input  = Uri.decodeQueryComponent(value);
+      updateOutputs(skip: "url");
     } catch(e,st) {
       _log.warning("urlOutput",e,st);
-      _urlInput = "";
+      urlError = e.toString();
     }
 
   }
@@ -53,27 +84,36 @@ class AppComponent {
   final HtmlUnescape _htmlUnescape = new HtmlUnescape();
 
 
-  void set htmlInput(String value) {
-    try {
-      _htmlInput = value;
-      _htmlOutput = _htmlEscape.convert(value);
-    } catch(e,st) {
-      _log.warning("htmlInput",e,st);
-      _htmlOutput= "";
-    }
-  }
-  String get htmlInput => _htmlInput;
 
   void set htmlOutput (String value) {
+    _log.fine("htmlOutput");
     try {
       _htmlOutput= value;
-      _htmlInput = _htmlUnescape.convert(value);
+      htmlError = "";
+      _input  = _htmlUnescape.convert(value);
+      updateOutputs(skip: "html");
     } catch(e,st) {
       _log.warning("htmlOutput",e,st);
-      _htmlInput= "";
+      htmlError = e.toString();
     }
 
   }
   String get htmlOutput => _htmlOutput;
+
+
+  void set b64Output (String value) {
+    _log.fine("b64Output");
+    try {
+      _b64Output = value;
+      b64Error = "";
+      _input = utf8.decode(base64.decode(value));
+      updateOutputs(skip: "b64");
+    } catch(e,st) {
+      _log.warning("htmlOutput",e,st);
+      b64Error = e.toString();
+    }
+
+  }
+  String get b64Output => _b64Output;
 
 }
