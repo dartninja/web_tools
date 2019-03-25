@@ -22,36 +22,58 @@ import 'package:html_unescape/html_unescape.dart';
 )
 class AppComponent {
   Logger _log = new Logger("AppComponent");
-  // Nothing here yet. All logic is in TodoListComponent.
 
-  bool encodeUrl = true, encodeHtml = true;
-  String urlInput = "", htmlInput = "";
+  String _urlInput = "", _htmlInput = "", _urlOutput = "", _htmlOutput = "";
 
-  String get urlOutput {
+
+  void set urlInput(String value) {
     try {
-      if (encodeUrl) {
-        return Uri.encodeQueryComponent(urlInput);
-      } else {
-        return Uri.decodeQueryComponent(urlInput);
-      }
+        _urlInput = value;
+        _urlOutput = Uri.encodeQueryComponent(value);
+    } catch(e,st) {
+      _log.warning("urlInput",e,st);
+      _urlOutput = "";
+    }
+  }
+  String get urlInput => _urlInput;
+
+  void set urlOutput(String value) {
+    try {
+      _urlOutput = value;
+      _urlInput = Uri.decodeQueryComponent(value);
     } catch(e,st) {
       _log.warning("urlOutput",e,st);
+      _urlInput = "";
     }
-    return "";
+
   }
+  String get urlOutput => _urlOutput;
+
   final HtmlEscape _htmlEscape = new HtmlEscape();
   final HtmlUnescape _htmlUnescape = new HtmlUnescape();
 
-  String get htmlOutput {
+
+  void set htmlInput(String value) {
     try {
-      if (encodeHtml) {
-        return _htmlEscape.convert(htmlInput);
-      } else {
-        return _htmlUnescape.convert(htmlInput);
-      }
+      _htmlInput = value;
+      _htmlOutput = _htmlEscape.convert(value);
+    } catch(e,st) {
+      _log.warning("htmlInput",e,st);
+      _htmlOutput= "";
+    }
+  }
+  String get htmlInput => _htmlInput;
+
+  void set htmlOutput (String value) {
+    try {
+      _htmlOutput= value;
+      _htmlInput = _htmlUnescape.convert(value);
     } catch(e,st) {
       _log.warning("htmlOutput",e,st);
+      _htmlInput= "";
     }
-    return "";
+
   }
+  String get htmlOutput => _htmlOutput;
+
 }
